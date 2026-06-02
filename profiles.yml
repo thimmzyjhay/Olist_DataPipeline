@@ -1,0 +1,13 @@
+Ecommerce_Transformation:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: ka34008.eu-central-2.aws
+      user: glue_user
+      password: 'Ayomidesamueljayeola@01'
+      role: ETL_ROLE
+      warehouse: COMPUTE_WH
+      database: E_COMMERCE
+      schema: BRONZE_RAW
+      threads: 4                         

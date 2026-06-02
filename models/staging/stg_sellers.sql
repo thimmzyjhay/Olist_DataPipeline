@@ -1,21 +1,21 @@
 {{
-    config(materialized='view')
+    config(materialized='table')
 }}
 
-with source as (
+WITH source AS (
     SELECT *
     FROM {{source('ecommerce', 'sellers')}}
 )
 
-renamed as (
+renamed AS (
 
-    select
-        seller_id,
-        seller_zip_code_prefix,
-        seller_city,
-        seller_state
-    from source
+    SELECT
+        CAST(TRIM(seller_id) AS STRING) seller_id,
+        CAST(TRIM(seller_zip_code_prefix) AS INT) seller_zip_code_prefix,
+        CAST(TRIM(seller_city) AS STRING) seller_city,
+        CAST(TRIM(seller_state) AS STRING) seller_state
+    FROM source
 
 )
 
-select * from renamed
+SELECT * FROM renamed

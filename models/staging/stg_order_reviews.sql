@@ -1,24 +1,24 @@
 {{
-    config(materialized='view')
+    config(materialized='table')
 }}
 
-with source as (
+WITH source AS (
     SELECT *
     FROM {{source('ecommerce', 'order_reviews')}}
 )
 
-renamed as (
+renamed AS (
 
-    select
-        review_id,
-        order_id,
-        review_score,
-        review_comment_title,
-        review_comment_message,
-        review_creation_date,
-        review_answer_timestamp
-    from source
+    SELECT
+        CAST(TRIM(review_id) AS STRING) review_id,
+        CAST(TRIM(order_id) AS INT) order_id,
+        CAST(TRIM(review_score) AS INT) review_score,
+        CAST(TRIM(review_comment_title) AS STRING) review_comment_title,
+        CAST(TRIM(review_comment_message) AS STRING) review_comment_message,
+        CAST(TRIM(review_creation_date) AS TIMESTAMP) review_creation_date,
+        CAST(TRIM(review_answer_timestamp) AS TIMESTAMP) review_answer_timestamp
+    FROM source
 
 )
 
-select * from renamed
+SELECT * FROM renamed

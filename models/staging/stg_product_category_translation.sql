@@ -1,19 +1,19 @@
 {{
-    config(materialized='view')
+    config(materialized='table')
 }}
 
-with source as (
+WITH source AS (
     SELECT *
     FROM {{source('ecommerce', 'product_category_name_translation')}}
 )
 
-renamed as (
+renamed AS (
 
-    select
-        product_category_name,
-        product_category_name_english
-    from source
+    SELECT
+        CAST(TRIM(product_category_name) AS STRING) product_category_name,
+        CAST(TRIM(product_category_name_english) AS STRING) product_category_name_english
+    FROM source
 
 )
 
-select * from renamed
+SELECT * FROM renamed

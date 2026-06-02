@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: fact_mart
+    database: E_COMMERCE
+    schema: staging
+    tables:     
+     - name: stg_customers
+     - name: stg_orders
+     - name: stg_products
+     - name: stg_sellers
+     - name: stg_products_category_translation

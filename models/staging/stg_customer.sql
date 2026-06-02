@@ -1,23 +1,23 @@
 {{
-    config(materialized='view')
+    config(materialized='table')
 }}
 
-with source as (
+WITH source AS (
 
-    select * from {{ source('ecommerce', 'customers') }}
+    SELECT * FROM {{ source('ecommerce', 'customers') }}
 
 ),
 
-renamed as (
+renamed AS (
 
-    select
-        customer_id,
-        customer_unique_id,
-        customer_zip_code_prefix,
-        customer_city,
-        customer_state
-    from source
+    SELECT
+        CAST(TRIM(customer_id) AS INT) customer_id,
+        CAST(TRIM(customer_unique_id) AS STRING) customer_unique_id,
+        CAST(TRIM(customer_zip_code_prefix) AS STRING) customer_zip_code_prefix,
+        CAST(TRIM(customer_city) AS STRING) customer_city,
+        CAST(TRIM(customer_state) AS STRING) customer_state
+    FROM source
 
 )
 
-select * from renamed
+SELECT * FROM renamed

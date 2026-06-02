@@ -1,26 +1,26 @@
 {{
-    config(materialized='view')
+    config(materialized='table')
 }}
 
-with source as (
+with source AS (
     SELECT *
     FROM {{source('ecommerce', 'products')}}
 )
 
-renamed as (
+renamed AS (
 
-    select
-        product_id,
-        product_category_name,
-        product_name_lenght,
-        product_description_lenght,
-        product_photos_qty,
-        product_weight_g,
-        product_length_cm,
-        product_height_cm,
-        product_width_cm
-    from source
+    SELECT
+        CAST(TRIM(product_id) AS STRING) product_id,
+        CAST(TRIM(product_category_name) AS STRING) product_category_name,
+        CAST(TRIM(product_name_lenght) AS INT) product_name_lenght,
+        CAST(TRIM(product_description_lenght) AS INT) product_description_lenght,
+        CAST(TRIM(product_photos_qty) AS INT) product_photos_qty,
+        CAST(TRIM(product_weight_g) AS FLOAT) product_weight_g,
+        CAST(TRIM(product_length_cm) AS FLOAT) product_length_cm,
+        CAST(TRIM(product_height_cm) AS FLOAT) product_height_cm,
+        CAST(TRIM(product_width_cm) AS FLOAT) product_width_cm
+    FROM source
 
 )
 
-select * from renamed
+SELECT * FROM renamed

@@ -1,24 +1,24 @@
-{{ config(materialized='view') }}
+{{ config(materialized='table') }}
 
-with source as (
+WITH source as (
 
-    select * from {{ source('ecommerce', 'orders') }}
+    SELECT * FROM {{ source('ecommerce', 'orders') }}
 
 ),
 
-renamed as (
+renamed AS (
 
-    select
-        order_id,
-        customer_id,
-        order_status,
-        order_purchase_timestamp,
-        order_approved_at,
-        order_delivered_carrier_date,
-        order_delivered_customer_date,
-        order_estimated_delivery_date
-    from source
+    SELECT
+        CAST(TRIM(order_id) AS INT) order_id,
+        CAST(TRIM(customer_id) AS INT) customer_id,
+        CAST(TRIM(order_status) AS STRING) order_status,
+        CAST(TRIM(order_purchase_timestamp) AS TIMESTAMP) order_purchase_timestamp,
+        CAST(TRIM(order_approved_at) AS TIMESTAMP) order_approved_at,
+        CAST(TRIM(order_delivered_carrier_date) AS TIMESTAMP) order_delivered_carrier_date,
+        CAST(TRIM(order_delivered_customer_date) AS TIMESTAMP) order_delivered_customer_date,
+        CAST(TRIM(order_estimated_delivery_date) AS TIMESTAMP) order_estimated_delivery_date
+    FROM source
 
 )
 
-select * from renamed
+SELECT * FROM renamed
