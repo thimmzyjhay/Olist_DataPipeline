@@ -2,7 +2,7 @@
 
 WITH source AS (
     SELECT *
-    FROM {{ source('ecommerce', 'stg_customers') }}
+    FROM {{ref('stg_customers') }}
 ),
 
 customer_city_dis AS (
@@ -26,4 +26,4 @@ customer_state_dis AS (
 )
 
 SELECT *
-FROM customer_state_dis;
+FROM customer_state_dis

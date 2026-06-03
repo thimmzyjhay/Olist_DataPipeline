@@ -9,5 +9,5 @@ Ecommerce_Transformation:
       role: ETL_ROLE
       warehouse: COMPUTE_WH
       database: E_COMMERCE
-      schema: BRONZE_RAW
+      schema: E_COMMERCE
       threads: 4                         

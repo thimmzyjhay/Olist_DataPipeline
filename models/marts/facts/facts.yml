@@ -2,8 +2,6 @@ version: 2
 
 sources:
   - name: fact_mart
-    database: E_COMMERCE
-    schema: staging
     tables:
       - name: stg_order_items
         description: "Staging table for order item details"

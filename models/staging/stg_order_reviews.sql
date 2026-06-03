@@ -5,13 +5,13 @@
 WITH source AS (
     SELECT *
     FROM {{source('ecommerce', 'order_reviews')}}
-)
+),
 
 renamed AS (
 
     SELECT
         CAST(TRIM(review_id) AS STRING) review_id,
-        CAST(TRIM(order_id) AS INT) order_id,
+        CAST(TRIM(order_id) AS STRING) order_id,
         CAST(TRIM(review_score) AS INT) review_score,
         CAST(TRIM(review_comment_title) AS STRING) review_comment_title,
         CAST(TRIM(review_comment_message) AS STRING) review_comment_message,

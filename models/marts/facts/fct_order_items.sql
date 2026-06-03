@@ -3,7 +3,7 @@
 }}
 
 WITH source AS (SELECT *
-             FROM {{source ('ecommerce', 'order_items')}}
+             FROM {{ ref('stg_order_items') }}
             )
 
 SELECT 
@@ -16,4 +16,4 @@ SELECT
     COUNT(DISTINCT seller_id) AS distinct_sellers,
     MAX(shipping_limit_date) AS latest_shipping_limit
 FROM source
-GROUP BY order_id;
+GROUP BY order_id

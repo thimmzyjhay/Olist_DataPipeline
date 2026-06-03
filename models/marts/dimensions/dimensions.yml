@@ -1,9 +1,7 @@
 version: 2
 
 sources:
-  - name: fact_mart
-    database: E_COMMERCE
-    schema: staging
+  - name: dimension_mart
     tables:     
      - name: stg_customers
      - name: stg_orders

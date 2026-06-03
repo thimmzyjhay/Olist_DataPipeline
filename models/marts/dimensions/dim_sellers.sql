@@ -2,10 +2,9 @@
 
 WITH source AS (
     SELECT *
-    FROM {{ source('ecommerce', 'stg_sellers') }}
+    FROM {{ ref('stg_sellers') }}
 ),
 
--- City-level distribution
 seller_city_dis AS (
     SELECT 
         seller_state,
@@ -15,7 +14,6 @@ seller_city_dis AS (
     GROUP BY seller_state, seller_city
 ),
 
--- State-level rollup
 seller_state_dis AS (
     SELECT 
         seller_state,
@@ -26,4 +24,4 @@ seller_state_dis AS (
 )
 
 SELECT *
-FROM seller_state_dis;
+FROM seller_state_dis

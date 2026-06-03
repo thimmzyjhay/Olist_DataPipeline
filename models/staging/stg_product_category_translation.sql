@@ -4,8 +4,8 @@
 
 WITH source AS (
     SELECT *
-    FROM {{source('ecommerce', 'product_category_name_translation')}}
-)
+    FROM {{source('ecommerce', 'product_category_translation')}}
+),
 
 renamed AS (
 

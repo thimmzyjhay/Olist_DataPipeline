@@ -4,13 +4,13 @@
 
 WITH source AS (SELECT *
              FROM {{source ('ecommerce', 'order_items')}}
-            )
+            ),
 
 renamed AS (
 
     SELECT
-        CAST(TRIM(order_id) AS INT) order_id,
-        CAST(TRIM(order_item_id) AS INT) order_item_id,
+        CAST(TRIM(order_id) AS STRING) order_id,
+        CAST(TRIM(order_item_id) AS STRING) order_item_id,
         CAST(TRIM(product_id) AS STRING) product_id,
         CAST(TRIM(seller_id) AS STRING) seller_id,
         CAST(TRIM(shipping_limit_date) AS TIMESTAMP) shipping_limit_date,

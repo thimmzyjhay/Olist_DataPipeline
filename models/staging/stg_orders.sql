@@ -9,8 +9,8 @@ WITH source as (
 renamed AS (
 
     SELECT
-        CAST(TRIM(order_id) AS INT) order_id,
-        CAST(TRIM(customer_id) AS INT) customer_id,
+        CAST(TRIM(order_id) AS STRING) order_id,
+        CAST(TRIM(customer_id) AS STRING) customer_id,
         CAST(TRIM(order_status) AS STRING) order_status,
         CAST(TRIM(order_purchase_timestamp) AS TIMESTAMP) order_purchase_timestamp,
         CAST(TRIM(order_approved_at) AS TIMESTAMP) order_approved_at,

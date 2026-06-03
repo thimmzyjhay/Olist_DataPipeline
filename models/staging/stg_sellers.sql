@@ -5,7 +5,7 @@
 WITH source AS (
     SELECT *
     FROM {{source('ecommerce', 'sellers')}}
-)
+),
 
 renamed AS (
 

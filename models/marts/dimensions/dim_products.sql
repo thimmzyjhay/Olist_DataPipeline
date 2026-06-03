@@ -2,7 +2,7 @@
 
 WITH source AS (
     SELECT *
-    FROM {{ source('ecommerce', 'stg_products') }}
+    FROM {{ ref('stg_products') }}
 ),
 
 product_metrics AS (
@@ -32,4 +32,4 @@ product_rank AS (
 )
 
 SELECT *
-FROM product_rank;
+FROM product_rank
