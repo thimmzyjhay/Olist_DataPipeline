@@ -1,21 +1,18 @@
-{{
-    config(materialized='table')
-}}
+{{ config(materialized="table") }}
 
-WITH source AS (
-    SELECT *
-    FROM {{source('ecommerce', 'order_payments')}}
-),
+with
+    source as (select * from {{ source("ecommerce", "order_payments") }}),
 
-renamed AS (
+    renamed as (
 
-    SELECT
-        CAST(TRIM(order_id) AS STRING) order_id,
-        CAST(TRIM(payment_sequential) AS INT) payment_sequential,
-        CAST(TRIM(payment_type) AS STRING) payment_type,
-        CAST(TRIM(payment_installments) AS INT) payment_installments,
-        CAST(TRIM(payment_value) AS FLOAT) payment_value
-    FROM source
+        select
+            cast(trim(order_id) as string) order_id,
+            cast(trim(payment_sequential) as int) payment_sequential,
+            cast(trim(payment_type) as string) payment_type,
+            cast(trim(payment_installments) as int) payment_installments,
+            cast(trim(payment_value) as float) payment_value
+        from source
 
-)
-SELECT * FROM renamed
+    )
+select *
+from renamed

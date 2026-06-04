@@ -39,4 +39,3 @@ models:
       +materialized: view
       +snowflake_warehouse: compute_wh
       +schema: gold
-
