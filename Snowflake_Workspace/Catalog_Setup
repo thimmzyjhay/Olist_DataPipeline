@@ -1,0 +1,28 @@
+-- Database and Schema setup with roles
+CREATE DATABASE IF NOT EXISTS e_commerce;
+CREATE SCHEMA bronze_raw;
+GRANT USAGE ON SCHEMA bronze_raw TO ROLE ETL_ROLE;
+GRANT CREATE TABLE ON SCHEMA bronze_raw TO ROLE ETL_ROLE;
+GRANT SELECT, INSERT ON FUTURE TABLES IN SCHEMA bronze_raw TO ROLE ETL_ROLE;
+GRANT SELECT, INSERT ON ALL TABLES IN SCHEMA bronze_raw TO ROLE ETL_ROLE;
+
+CREATE ROLE IF NOT EXISTS ETL_ROLE;
+GRANT USAGE ON WAREHOUSE compute_wh TO ROLE ETL_ROLE;
+GRANT USAGE ON DATABASE e_commerce TO ROLE ETL_ROLE;
+GRANT CREATE TABLE ON SCHEMA e_commerce.bronze_raw TO ROLE ETL_ROLE;
+GRANT SELECT, INSERT ON FUTURE TABLES IN SCHEMA e_commerce.bronze_raw TO ROLE ETL_ROLE;
+GRANT SELECT, INSERT ON ALL TABLES IN SCHEMA e_commerce.bronze_raw TO ROLE ETL_ROLE;
+
+-- creating snowflake user for glue
+CREATE USER IF NOT EXISTS glue_user 
+    PASSWORD = 'xxxxxxxxxxx'
+    DEFAULT_ROLE = ETL_ROLE
+    DEFAULT_WAREHOUSE = compute_wh
+    DEFAULT_NAMESPACE = e_commerce.bronze_raw
+    COMMENT = 'Service account for AWS Glue and other connection on ETL';
+
+GRANT ROLE ETL_ROLE TO USER glue_user;
+
+-- Classify glue_user as a programmatic service account to exempt it from MFA
+ALTER USER glue_user SET TYPE = SERVICE;
+ALTER USER glue_user SET PASSWORD = 'xxxxxxxxxxxxxxxxx';
