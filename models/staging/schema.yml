@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: ecommerce
+    database: E_COMMERCE
+    schema: BRONZE_RAW
+    tables:     
+     - name: customers
+     - name: orders
+     - name: products
+     - name: order_items
+     - name: order_payments
+     - name: order_reviews
+     - name: sellers
+     - name: product_category_translation
