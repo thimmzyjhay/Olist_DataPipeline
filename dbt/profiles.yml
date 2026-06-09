@@ -3,7 +3,7 @@ Ecommerce_Transformation:
   outputs:
     dev:
       type: snowflake
-      account: ka34008.eu-central-2.aws
+      account: .eu-central-2.aws
       user: glue_user
       password: 'xxxxxxx'
       role: ETL_ROLE
