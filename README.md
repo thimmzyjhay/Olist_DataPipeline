@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Olist Ecommerce Pipeline
+=======
+# Ecommerce Transformation
+>>>>>>> ac31ce6ca16fbfeaaed8d1a8eff9bb7587dba14f
 
 ## Project Overview
 
@@ -10,7 +14,12 @@ The objective is to convert raw operational data into a scalable analytical ware
 <img width="583" height="372" alt="my raw schema" src="https://github.com/user-attachments/assets/7fd54541-9542-49f9-b553-8487152c3e98" />
 
 ## Problem Statement
+<<<<<<< HEAD
 Brazil's e‑commerce sector has grown rapidly, but companies face challenges in understanding customer behavior, logistics performance, and satisfaction drivers. The Olist dataset captures over a decade of transactions from a major Brazilian marketplace. The problem is that without integration and analysis, businesses cannot:
+=======
+Brazil's e‑commerce sector has grown rapidly, but companies face challenges in understanding customer behavior, logistics performance, and satisfaction drivers. The Olist dataset captures over[...]
+- The problem is that without integration and analysis, businesses cannot:
+>>>>>>> ac31ce6ca16fbfeaaed8d1a8eff9bb7587dba14f
 - Identify bottlenecks in delivery times and freight costs.
 - Understand payment patterns and customer preferences.
 - Track customer satisfaction through reviews and ratings.
@@ -55,8 +64,13 @@ Tables included:
 - **Extract**: Raw e‑commerce data is ingested from **AWS S3** into the data pipeline.  
 - **Load**: The extracted data is loaded into the **Snowflake warehouse** under the `E_COMMERCE.BRONZE` schema.  
 - **Transform**: Using **dbt**, transformations are executed directly inside Snowflake:  
+<<<<<<< HEAD
   - **Staging models (SILVER)** standardize formats, clean data, and apply business rules.  
   - **Mart models (GOLD)** aggregate data into dimensional structures for analytics and reporting.  
+=======
+   - **Staging models (SILVER)** standardize formats, clean data, and apply business rules.  
+   - **Mart models (GOLD)** aggregate data into dimensional structures for analytics and reporting.  
+>>>>>>> ac31ce6ca16fbfeaaed8d1a8eff9bb7587dba14f
 
 **Flow:** **AWS S3 → Snowflake (Bronze) → dbt (Silver) → dbt (Gold)**
 
