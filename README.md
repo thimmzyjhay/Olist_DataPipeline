@@ -1,4 +1,4 @@
-# Ecommerce Transformation
+# Olist Ecommerce DataPipeline
 
 ## Project Overview
 
@@ -10,8 +10,9 @@ The objective is to convert raw operational data into a scalable analytical ware
 <img width="583" height="372" alt="my raw schema" src="https://github.com/user-attachments/assets/7fd54541-9542-49f9-b553-8487152c3e98" />
 
 ## Problem Statement
-Brazil's e‑commerce sector has grown rapidly, but companies face challenges in understanding customer behavior, logistics performance, and satisfaction drivers. The Olist dataset captures over[...]
-- The problem is that without integration and analysis, businesses cannot:
+Brazil's e-commerce sector has grown rapidly, but companies face challenges in understanding customer behavior, logistics performance, and satisfaction drivers. The Olist dataset captures the full order lifecycle from purchase to delivery and review across thousands of sellers and customers nationwide.
+
+Without proper data integration and transformation, businesses cannot:
 - Identify bottlenecks in delivery times and freight costs.
 - Understand payment patterns and customer preferences.
 - Track customer satisfaction through reviews and ratings.
@@ -19,37 +20,62 @@ Brazil's e‑commerce sector has grown rapidly, but companies face challenges in
 
 ## Project Architecture
 The pipeline demonstrates the architecture of a modern cloud native data stack, including:
-- **Cloud Data Lake storage** (AWS S3)  
-- **Cloud Data Warehouse** (Snowflake)  
-- **dbt‑based transformations** for ELT  
-- **Dimensional modelling** (star schema design)   
-- **Workflow orchestration** (via dbt CLI)  
-- **Business Intelligence enablement** (analytics ready marts)
+```
+AWS S3 (Raw Files)
+      │
+      ▼
+Snowflake – BRONZE Schema  (Raw ingestion layer)
+      │
+      ▼
+Snowflake – SILVER Schema  (Staging: cleaned & standardized via dbt)
+      │
+      ▼
+Snowflake – GOLD Schema    (Marts: dimensional models for analytics)
+```
+### Architecture Components
+| Component | Tool |
+|---|---|
+| Cloud Storage | AWS S3 |
+| Cloud Data Warehouse | Snowflake |
+| Transformation Framework | dbt (ELT) |
+| Data Modelling | Star Schema / Dimensional Modelling |
+| Orchestration | dbt CLI |
+| Version Control | Git + GitHub |
 
 
-## Key concepts demonstrated in this project include:
-- OLTP → OLAP transformation  
-- Dimensional modelling and star schema design  
-- Modern ELT architecture with dbt  
-- Cloud native ingestion and transformation pipeline
+### Key Concepts Demonstrated
+- OLTP → OLAP transformation
+- Dimensional modelling and star schema design
+- Modern ELT architecture with dbt
+- Medallion Architecture (Bronze / Silver / Gold)
+- Cloud-native ingestion and transformation pipeline
+- Custom dbt macros for schema management
 
 ## Dataset
-Tables included:
-- **orders** – customer orders
-- **order_items** – items within each order
-- **customers** – customer details
-- **products** – product catalog
-- **sellers** – seller information
-- **order_reviews** – customer reviews
-- **order_payments** – payment transactions
-- **product_category_translation** – product category mapping
+The Olist dataset consists of 8 interrelated tables representing the full e-commerce order lifecycle:
+| Table | Description |
+|---|---|
+| `orders` | Customer orders and their status/timestamps |
+| `order_items` | Line items within each order including price and freight |
+| `customers` | Customer details and geolocation |
+| `products` | Product catalog with category and dimensions |
+| `sellers` | Seller information and location |
+| `order_reviews` | Customer review scores and comments |
+| `order_payments` | Payment transactions and methods |
+| `product_category_translation` | Portuguese to English category name mapping |
 
-## Tech Stack
-- Warehouse: **Snowflake**
-- Transformation: **dbt**
-- Version control: **Git + GitHub**
-- Orchestration: **dbt CLI** (local runs)
-- Documentation: **github**
+**Source:** [Kaggle — Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
+
+### Tech Stack
+| Layer | Technology |
+|---|---|
+| Cloud Storage | AWS S3 |
+| Data Warehouse | Snowflake |
+| Transformation | dbt Core |
+| Language | SQL |
+| Version Control | Git + GitHub |
+| Orchestration | dbt CLI (local) |
+| Documentation | dbt docs + GitHub |
 
 ## ELT Process
 
@@ -61,26 +87,69 @@ Tables included:
 
 **Flow:** **AWS S3 → Snowflake (Bronze) → dbt (Silver) → dbt (Gold)**
 
-## Transformations
-- **Models**: SQL models define transformations from raw data into staging and analytics layers.  
-- **Macros**: custom logic for schema renaming and materialization strategies.  
-- **Configuration**: managed through `dbt_project.yml` to control project settings and model behavior.  
-- **Profiles**: connection details stored in `profiles.yml` for Snowflake warehouse access.  
-- **Version Control**: Git was used to track changes, manage branches, and maintain project history.  
-- **Repository Management**: `.gitignore` ensures clean repository organization by excluding unnecessary files.
+## dbt Project Structure
+
+**Staging (Silver)**
+| Model | Description |
+|---|---|
+| `stg_customers` | Cleaned customer records |
+| `stg_orders` | Standardized order data |
+| `stg_order_items` | Cleaned order line items |
+| `stg_order_payments` | Normalized payment records |
+| `stg_order_reviews` | Cleaned review scores and comments |
+| `stg_products` | Standardized product catalog |
+| `stg_sellers` | Cleaned seller records |
+| `stg_product_category_translation` | Mapped category translations |
+
+**Marts (Gold)**
+*Dimensions:*
+| Model | Description |
+|---|---|
+| `dim_customers` | Customer dimension |
+| `dim_products` | Product dimension |
+| `dim_sellers` | Seller dimension |
+| `dim_orders` | Order dimension |
+
+*Facts:*
+| Model | Description |
+|---|---|
+| `fct_order_items` | Order items fact table |
+| `fct_order_payments` | Payment transactions fact table |
+| `fct_order_reviews` | Reviews and ratings fact table |
+| `fact_summary` | Aggregated order summary |
 
 ## File structure
 ```
-Olist_Dataset
-├── Dataset/
-├── dbt/
+Olist_DataPipeline/
+├── Dataset/                        # Raw source CSV files
+├── dbt_workspace/
 │   ├── macros/
-│   └── models/
-│       ├── marts/
-│       │   ├── dimensions/
-│       │   └── facts/
-│       └── staging/
-├── Snowflake_Workspace/
+│   │   └── generate_schema_name.sql
+│   ├── models/
+│   │   ├── staging/                # Silver layer models
+│   │   │   ├── stg_customers.sql
+│   │   │   ├── stg_orders.sql
+│   │   │   ├── stg_order_items.sql
+│   │   │   ├── stg_order_payments.sql
+│   │   │   ├── stg_order_reviews.sql
+│   │   │   ├── stg_products.sql
+│   │   │   ├── stg_sellers.sql
+│   │   │   ├── stg_product_category_translation.sql
+│   │   │   └── sources.yml
+│   │   └── marts/                    # gold layer models
+│   │       ├── dimensions/
+│   │       │   ├── dim_customers.sql
+│   │       │   ├── dim_products.sql
+│   │       │   ├── dim_sellers.sql
+│   │       │   └── dim_orders.sql
+│   │       └── facts/
+│   │           ├── fct_order_items.sql
+│   │           ├── fct_order_payments.sql
+│   │           ├── fct_order_reviews.sql
+│   │           └── fact_summary.sql
+│   ├── dbt_project.yml
+│   └── profiles.yml
+├── snowflake_workspace/            # Snowflake setup scripts
 └── README.md
 ```
 
