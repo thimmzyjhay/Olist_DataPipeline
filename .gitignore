@@ -1,9 +1,0 @@
-# Block temporary dbt folders
-target/
-dbt_packages/
-logs/
-
-# Block the heavy python folders
-.venv/
-venv/
-__pycache__/
