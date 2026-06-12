@@ -10,12 +10,13 @@ The objective is to convert raw operational data into a scalable analytical ware
 <img width="583" height="372" alt="my raw schema" src="https://github.com/user-attachments/assets/7fd54541-9542-49f9-b553-8487152c3e98" />
 
 ## Problem Statement
-Brazil's e‑commerce sector has grown rapidly, but companies face challenges in understanding customer behavior, logistics performance, and satisfaction drivers. The Olist dataset captures over[...]
-- The problem is that without integration and analysis, businesses cannot:
-- Identify bottlenecks in delivery times and freight costs.
-- Understand payment patterns and customer preferences.
-- Track customer satisfaction through reviews and ratings.
-- Evaluate seller and product performance across regions.
+Organizations working with the Olist dataset face a core data engineering challenge: raw transactional data arrives as disconnected flat files across multiple sources with no unified structure, no transformation layer, and no analytical schema to query against.
+In its raw form, this data cannot support reliable analytics because:
+
+- No single source of truth: data is scattered across 8 separate CSV files with no enforced relationships or integrity constraints
+- No transformation layer: raw fields contain inconsistent formats, untranslated categories, and unresolved foreign keys that make joins unreliable
+- No scalable storage: flat files cannot support concurrent querying, incremental loads, or historical tracking at scale
+- No analytical structure: OLTP-style raw tables are not optimized for aggregation, reporting, or BI consumption
 
 ## Project Architecture
 The pipeline demonstrates the architecture of a modern cloud native data stack, including:
