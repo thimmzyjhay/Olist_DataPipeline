@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: fact_mart
+    tables:
+      - name: stg_order_items
+        description: "Staging table for order item details"
+      - name: stg_order_payments
+        description: "Staging table for order payment details"
+      - name: stg_order_reviews
+        description: "Staging table for order review details"
