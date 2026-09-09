@@ -6,9 +6,6 @@ This project implements the design and deployment of an end‑to‑end data engi
 Raw transactional data is ingested from **AWS S3** into a **Snowflake warehouse**, then transformed with **dbt** into analytics ready tables for reporting and advanced analytics.
 The objective is to centralize raw operational data into a reliable analytics layer that improves visibility, reporting, and decision making across the organization and also reduces manual reporting effort and gives teams timely access to business insights.
 
-### Source ERD
-<img width="583" height="372" alt="my raw schema" src="https://github.com/user-attachments/assets/7fd54541-9542-49f9-b553-8487152c3e98" />
-
 ## Problem Statement
 Olist e-commerce company generates large volumes of order, payment, delivery, and customer review data, but the data is often scattered and difficult to turn into actionable insight. As a result, teams struggle to identify delivery bottlenecks, understand what drives customer satisfaction, track payment behavior, and compare seller and product performance across regions.
 
@@ -17,6 +14,24 @@ Without a reliable data foundation, businesses cannot:
 - Understand customer buying and payment behavior.
 - Monitor satisfaction trends from review and rating data.
 - Evaluate seller and product performance to improve operations and growth.
+
+## Dataset
+The Olist dataset consists of 8 interrelated tables representing the full e-commerce order lifecycle:
+| Table | Description |
+|---|---|
+| `orders` | Customer orders and their status/timestamps |
+| `order_items` | Line items within each order including price and freight |
+| `customers` | Customer details and geolocation |
+| `products` | Product catalog with category and dimensions |
+| `sellers` | Seller information and location |
+| `order_reviews` | Customer review scores and comments |
+| `order_payments` | Payment transactions and methods |
+| `product_category_translation` | Portuguese to English category name mapping |
+
+**Source:** [Kaggle — Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
+
+### Source ERD
+<img width="583" height="372" alt="my raw schema" src="https://github.com/user-attachments/assets/7fd54541-9542-49f9-b553-8487152c3e98" />
 
 ## Project Architecture
 The pipeline demonstrates the architecture of a modern cloud native data stack, including:
@@ -42,7 +57,6 @@ Snowflake – GOLD Schema    (Marts: dimensional models for analytics)
 | Orchestration | dbt CLI |
 | Version Control | Git + GitHub |
 
-
 ### Key Concepts Demonstrated
 - OLTP → OLAP transformation
 - Dimensional modelling and star schema design
@@ -50,21 +64,6 @@ Snowflake – GOLD Schema    (Marts: dimensional models for analytics)
 - Medallion Architecture (Bronze / Silver / Gold)
 - Cloud-native ingestion and transformation pipeline
 - Custom dbt macros for schema management
-
-## Dataset
-The Olist dataset consists of 8 interrelated tables representing the full e-commerce order lifecycle:
-| Table | Description |
-|---|---|
-| `orders` | Customer orders and their status/timestamps |
-| `order_items` | Line items within each order including price and freight |
-| `customers` | Customer details and geolocation |
-| `products` | Product catalog with category and dimensions |
-| `sellers` | Seller information and location |
-| `order_reviews` | Customer review scores and comments |
-| `order_payments` | Payment transactions and methods |
-| `product_category_translation` | Portuguese to English category name mapping |
-
-**Source:** [Kaggle — Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
 
 ### Tech Stack
 | Layer | Technology |
