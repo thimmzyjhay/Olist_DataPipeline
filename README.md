@@ -89,11 +89,14 @@ The Olist dataset consists of 8 interrelated tables representing the full e-comm
 
 ## Ingestion (Bronze)
 
-Raw CSVs are loaded from **AWS S3** into Snowflake using **COPY INTO**, after setting up file formats, stages, and load rules — this solves the problem of getting scattered raw files into a queryable warehouse table before any transformation can happen.
+**1. Catalog setup** — before loading any data, a database, schema, and role based access are created in Snowflake so raw data lands in a governed, permissioned location rather than an open free for all:
+
+
+**2. Load** — raw CSVs are then loaded from **AWS S3** into `bronze_raw` using **COPY INTO**, via a configured file format and external stage. This solves the core ingestion problem: getting scattered files out of S3 and into a queryable warehouse table, with consistent load rules, before any transformation logic touches the data.
 
 ## Staging Layer (Silver)
 
-All staging models solve the same problem: raw data has inconsistent types/formatting, so nothing downstream can safely group, sum, or join on it. Each model just cleans and types one raw table (`stg_customers`, `stg_sellers`, `stg_orders`, `stg_order_items`, `stg_order_payments`, `stg_order_reviews`, `stg_products`, `stg_product_category_translation`) so the business can trust the numbers built on top of it.
+Every staging model does the same two things to its raw Bronze table: **trims** whitespace from text fields and **casts** each column to its correct data type (e.g. IDs to `STRING`, dates to proper timestamp types). This solves the problem of raw data being unreliable to group, sum, or join on a `customer_id` with trailing spaces or a zip code silently cast to the wrong type will break joins and miscount records downstream, and this is the layer that guarantees that never happens.
 
 ## Marts Layer (Gold)
 
@@ -108,6 +111,16 @@ All staging models solve the same problem: raw data has inconsistent types/forma
 - `fct_order_payments` — how was each order paid, and how many attempts did it take?
 - `fct_order_reviews` — how satisfied was the customer, and what did they say?
 - `fact_summary` — the full picture of one order (items + payment + review) in a single row.
+
+## dbt Configuration (YAML)
+
+Model behavior and documentation are managed through dbt's YAML files rather than hardcoded in SQL:
+
+- **`profiles.yml`** — handles the Snowflake connection: account, warehouse, database, schema, and credentials. This is what lets `dbt run` actually reach the warehouse.
+- **`dbt_project.yml`** — the project wide config: default materializations per folder (e.g. staging models as `table`, marts as `view`), model paths, and other settings that apply across the whole project rather than one model at a time.
+- **`schema.yml`** (one inside each model folder staging, dimensions, facts) — documents each model and its columns, declares sources via `source()` so raw Bronze tables aren't hardcoded by name, and defines tests like `unique` and `not_null` on key columns so broken or duplicate data is caught automatically instead of surfacing later in a report.
+
+Splitting configuration this way keeps connection details, project wide defaults, and model level documentation/tests each in their own place so a change to one (e.g. adding a test to `fct_order_payments`) doesn't require touching the others.
 
 ## dbt Project Structure
 
@@ -143,7 +156,6 @@ All staging models solve the same problem: raw data has inconsistent types/forma
 ## File structure
 ```
 Olist_DataPipeline/
-├── Dataset/                        # Raw source CSV files
 ├── dbt_workspace/
 │   ├── macros/
 │   │   └── generate_schema_name.sql
