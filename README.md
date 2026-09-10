@@ -87,33 +87,27 @@ The Olist dataset consists of 8 interrelated tables representing the full e-comm
 
 **Flow:** **AWS S3 → Snowflake (Bronze) → dbt (Silver) → dbt (Gold)**
 
+## Ingestion (Bronze)
+
+Raw CSVs are loaded from **AWS S3** into Snowflake using **COPY INTO**, after setting up file formats, stages, and load rules — this solves the problem of getting scattered raw files into a queryable warehouse table before any transformation can happen.
+
 ## Staging Layer (Silver)
 
-All staging models solve the same core problem: raw source data has inconsistent types/formatting, so nothing downstream can safely aggregate or join on it. Each one trims and casts fields to a clean, typed base.
+All staging models solve the same problem: raw data has inconsistent types/formatting, so nothing downstream can safely group, sum, or join on it. Each model just cleans and types one raw table (`stg_customers`, `stg_sellers`, `stg_orders`, `stg_order_items`, `stg_order_payments`, `stg_order_reviews`, `stg_products`, `stg_product_category_translation`) so the business can trust the numbers built on top of it.
 
-stg_customers — standardizes customer records so state/city can be grouped on reliably.
-stg_sellers — same, for seller records.
-stg_orders — standardizes order timestamps/status so delivery and approval-lag metrics can be computed.
-stg_order_items — standardizes price/freight/product/seller references so order-level totals can be built.
-stg_order_payments — standardizes payment records so per-order payment summaries can be built.
-stg_order_reviews — standardizes review scores/comments so per-order review summaries can be built.
-stg_products — standardizes product catalog fields so category-level profiles can be built.
-stg_product_category_translation — solves the Portuguese-category-name problem by mapping to English for readable reporting.
-Marts Layer (Gold)
+## Marts Layer (Gold)
 
-## Dimensions
+**Dimensions**
+- `dim_customers` — which states have the most customers, and how much is repeat vs. unique?
+- `dim_sellers` — which states have the most active sellers?
+- `dim_products` — how big is each product category?
+- `dim_orders` — what's our overall delivery performance?
 
-dim_customers — solves "which states have the most customers, and how much is unique vs. repeat?" for regional demand analysis.
-dim_sellers — solves "which states have the most active sellers?" to show where seller supply is concentrated.
-dim_products — solves "how big is each category, and what do its products typically look like?"
-dim_orders — solves "what's our overall delivery performance?" as a single global KPI snapshot (avg delivery time, approval lag, late orders).
-
-## Facts
-
-fct_order_items — solves "what was each order worth, and how many items/products/sellers were involved?"
-fct_order_payments — solves "how was each order paid — total value, attempts, installments, first method used?"
-fct_order_reviews — solves "how satisfied was the customer, and what did they say most recently?"
-fact_summary — solves "give me the full picture of one order (items + payment + review) in a single row," built by joining the three facts above rather than recomputing their logic.
+**Facts**
+- `fct_order_items` — what was each order worth, and how many items/sellers were involved?
+- `fct_order_payments` — how was each order paid, and how many attempts did it take?
+- `fct_order_reviews` — how satisfied was the customer, and what did they say?
+- `fact_summary` — the full picture of one order (items + payment + review) in a single row.
 
 ## dbt Project Structure
 
