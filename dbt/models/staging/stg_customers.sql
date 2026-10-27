@@ -1,23 +1,20 @@
-{{
-    config(materialized='table')
-}}
+{{ config(materialized="table") }}
 
-WITH source AS (
+with
+    source as (select * from {{ source("ecommerce", "customers") }}),
 
-    SELECT * FROM {{ source('ecommerce', 'customers') }}
+    renamed as (
 
-),
+        select
+            cast(trim(customer_id) as string) customer_id,
+            cast(trim(customer_unique_id) as string) customer_unique_id,
+            cast(trim(customer_zip_code_prefix) as string) customer_zip_code_prefix,
+            cast(trim(customer_city) as string) customer_city,
+            cast(trim(customer_state) as string) customer_state
+            current_timestamp() as loaded_at
+        from source
 
-renamed AS (
+    )
 
-    SELECT
-        CAST(TRIM(customer_id) AS STRING) customer_id,
-        CAST(TRIM(customer_unique_id) AS STRING) customer_unique_id,
-        CAST(TRIM(customer_zip_code_prefix) AS STRING) customer_zip_code_prefix,
-        CAST(TRIM(customer_city) AS STRING) customer_city,
-        CAST(TRIM(customer_state) AS STRING) customer_state
-    FROM source
-
-)
-
-SELECT * FROM renamed
+select *
+from renamed

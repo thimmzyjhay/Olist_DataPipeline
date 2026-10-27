@@ -1,0 +1,73 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: "Grain: one row per order. Includes is_valid_order (excludes canceled/unavailable), delivery_days and late_delivery_flag."
+    columns:
+      - name: order_id
+        data_tests: [unique, not_null]
+      - name: customer_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+
+  - name: fct_order_items
+    description: "Grain: one row per order item. Revenue = sum of price."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [order_id, order_item_id]
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('fct_orders')
+              field: order_id
+      - name: product_id
+        data_tests:
+          - relationships:
+              to: ref('dim_products')
+              field: product_id
+      - name: seller_id
+        data_tests:
+          - relationships:
+              to: ref('dim_sellers')
+              field: seller_id
+
+  - name: fct_order_payments
+    description: "Grain: one row per payment entry for an order."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [order_id, payment_sequential]
+
+  - name: fct_order_reviews
+    description: "Grain: one row per review and order. Confirm the real grain before relying on this test."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [review_id, order_id]
+
+  - name: dim_customers
+    description: "Grain: one row per customer_id. customer_unique_id identifies the person and repeats by design."
+    columns:
+      - name: customer_id
+        data_tests: [unique, not_null]
+
+  - name: dim_products
+    description: "Grain: one row per product_id, with English category name."
+    columns:
+      - name: product_id
+        data_tests: [unique, not_null]
+
+  - name: dim_sellers
+    description: "Grain: one row per seller_id."
+    columns:
+      - name: seller_id
+        data_tests: [unique, not_null]
+
+  - name: dim_date
+    description: "Grain: one row per calendar day."
+    columns:
+      - name: date_key
+        data_tests: [unique, not_null]

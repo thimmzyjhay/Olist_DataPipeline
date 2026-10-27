@@ -32,10 +32,14 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   Ecommerce_Transformation:
     staging:
+      +materialized: view
+      +snowflake_warehouse: compute_wh
+      +schema: staging
+    intermediate:
       +materialized: table
       +snowflake_warehouse: compute_wh
-      +schema: silver
+      +schema: intermediate
     marts:
-      +materialized: view
+      +materialized: table
       +snowflake_warehouse: compute_wh
       +schema: gold

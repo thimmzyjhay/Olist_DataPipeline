@@ -7,9 +7,9 @@ with
 
         select
             cast(trim(seller_id) as string) seller_id,
-            cast(trim(seller_zip_code_prefix) as int) seller_zip_code_prefix,
             cast(trim(seller_city) as string) seller_city,
-            cast(trim(seller_state) as string) seller_state
+            cast(trim(seller_state) as string) seller_state,
+            cast(trim(seller_zip_code_prefix) as int) seller_zip_code_prefix
         from source
 
     )

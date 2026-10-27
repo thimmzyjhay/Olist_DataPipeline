@@ -1,23 +1,22 @@
-{{
-    config(materialized='table')
-}}
+{{ config(materialized="table") }}
 
-WITH source AS (SELECT *
-             FROM {{source ('ecommerce', 'order_items')}}
-            ),
+with
+    source as (select * from {{ source("ecommerce", "order_items") }}),
 
-renamed AS (
+    renamed as (
 
-    SELECT
-        CAST(TRIM(order_id) AS STRING) order_id,
-        CAST(TRIM(order_item_id) AS STRING) order_item_id,
-        CAST(TRIM(product_id) AS STRING) product_id,
-        CAST(TRIM(seller_id) AS STRING) seller_id,
-        CAST(TRIM(shipping_limit_date) AS TIMESTAMP) shipping_limit_date,
-        CAST(TRIM(price) AS FLOAT) price,
-        CAST(TRIM(freight_value) AS FLOAT) freight_value
-    FROM source
+        select
+            cast(trim(order_id) as string) order_id,
+            cast(trim(order_item_id) as string) order_item_id,
+            cast(trim(product_id) as string) product_id,
+            cast(trim(seller_id) as string) seller_id,
+            cast(trim(shipping_limit_date) as timestamp) shipping_limit_date,
+            cast(trim(price) as number(12, 2)) price,
+            cast(trim(freight_value) as number(12, 2)) freight_value
+            current_timestamp() as loaded_at
+        from source
 
-)
+    )
 
-SELECT * FROM renamed
+select *
+from renamed
